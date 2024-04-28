@@ -1,0 +1,155 @@
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Aled ! Je suis Perdu</title>
+    <meta name="description" content=".">
+    <link rel="icon" href="/images/favicon.ico" />
+    <link href="/stylesheets/main.css" rel="stylesheet" type="text/css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <form class="js-nameForm form">
+        <input type="text" placeholder="Tu t'appelles comment ?">
+    </form>
+    <h4 class="js-direBonjour direBonjour"></h4>
+
+    <div class="map">
+        <iframe
+            src="https://www.google.com/maps/embed?pb=!4v1711362566471!6m8!1m7!1s3tEbG4dlPKANB0WLn-ipsg!2m2!1d47.90433990989852!2d1.898771197829485!3f352.25053929762333!4f-19.215005512174088!5f0.7820865974627469"
+            width="1000" height="800" style="border:0;" allowfullscreen="" loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+    <div class="chat-box">
+        <div class="chat-box-header">
+            <h3>Nouveau Message</h3>
+            <p><i class="fa fa-times"></i></p>
+        </div>
+        <div class="chat-box-body">
+            <div class="chat-box-body-receive result">
+                <p>This is my message.</p>
+                <span>12:00</span>
+            </div>
+            <div class="chat-box-body-receive result">
+                <p>This is my message.</p>
+                <span>12:00</span>
+            </div>
+            <div class="chat-box-body-send msg">
+                <p>This is my message.</p>
+                <span>12:00</span>
+            </div>
+            <div class="chat-box-body-send">
+                <p>This is my message.</p>
+                <span>12:00</span>
+            </div>
+            <div class="chat-box-body-receive result">
+                <p>This is my message.</p>
+                <span>12:00</span>
+            </div>
+            <div class="chat-box-body-receive result">
+                <p>This is my message.</p>
+                <span>12:00</span>
+            </div>
+            <div class="chat-box-body-send msg">
+                <p>This is my message.</p>
+                <span>12:00</span>
+            </div>
+        </div>
+        <div class="chat-box-footer">
+            <button id="addExtra"></button>
+            <input placeholder="Enter Your Message" type="text" id="user-input" />
+            <button class="send" type="button" id="sendBtn">Send</button>
+        </div>
+    </div>
+    <div class="chat-button"><span></span></div>
+    <div class="modal">
+        <div class="modal-content">
+            <span class="modal-close-button">&times;</span>
+            <h1>Add What you want here.</h1>
+        </div>
+    </div>
+
+    <!-- script -->
+    <script src="/javascripts/main.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            console.log("ready");
+
+            const url = '/api/chat';
+
+            function sendMessage() {
+                const fetch = require("node-fetch");
+                var userInput = document.getElementById("user-input").value;
+
+                fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        prompt: userInput,
+                    })
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        // 서버로부터 받은 데이터를 사용하여 채팅 박스에 메시지 추가
+                        const messageText = data.choices[0].text;
+                        addToDiscussion("other", messageText);
+                    })
+                    .catch((error) => console.error("Error:", error));
+            }
+
+            $(".chat-button").on("click", function () {
+                $(".chat-button").css({
+                    display: "none",
+                });
+                $(".chat-box").css({
+                    visibility: "visible",
+                });
+            });
+
+            $(".chat-box .chat-box-header p").on("click", function () {
+                $(".chat-button").css({
+                    display: "block",
+                });
+                $(".chat-box").css({
+                    visibility: "hidden",
+                });
+            });
+
+            $("#addExtra").on("click", function () {
+                $(".modal").toggleClass("show-modal");
+            });
+
+            $(".modal-close-button").on("click", function () {
+                $(".modal").toggleClass("show-modal");
+            });
+
+            $("#sendBtn").on("click", function (event) {
+                sendMessage();
+                addToDiscussion();
+
+                $("#user-input").val("");
+                $("#user-input").focus();
+            });
+
+            function addToDiscussion(writer, msg) {
+                var contents =
+                    "<div class='chat-box-body-" + writer + "'>" +
+                    "<p>" + msg + "</p>" +
+                    "</div>";
+                $(".chat-box-body").append(contents);
+            }
+        });
+    </script>
+</body>
+
+<footer class="contact-info hidden">
+</footer>
+
+</html>
