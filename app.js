@@ -55,7 +55,7 @@ async function fetchData() {
         max_tokens: 150,
       }),
     });
-    const data = await response.json();
+    return await response.json();
   } catch (error) {
     console.error("Error fetching data:", error);
     console.log(data);
@@ -68,7 +68,11 @@ router.post("/chat", async (req, res) => {
   try {
     const userInput = req.body.prompt;
     const data = await fetchData(userInput);
-    res.json(data); // 클라이언트에 응답 데이터 반환
+    if (data) {
+      res.json(data); // 클라이언트에 응답 데이터 반환
+    } else {
+      res.status(404).json({ error: "No data returned from the API"});
+    }
   } catch (error) {
     console.error("Error communicating with OpenAI API:", error);
     res.status(500).json({ error: "Failed to communicate with OpenAI API" });
