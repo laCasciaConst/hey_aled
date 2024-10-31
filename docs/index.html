@@ -367,15 +367,33 @@
 
     <!-- script -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    $(document).ready(function() {
+        // 'user-input'라는 ID를 가진 요소를 선택
+        var userInput = $("#user-input");
+    
+        // 요소가 존재하는 경우에만 이벤트 리스너를 추가
+        if (userInput.length) {
+            userInput.on('click', function() {
+                console.log('Input clicked!');
+            });
+        } else {
+            console.log('Element not found!');
+        }
+    
+        // 'sendBtn' ID를 가진 요소에 클릭 이벤트 리스너 추가
+        $("#sendBtn").on('click', function() {
+            askBot();
+            console.log('Send button clicked!');
+        });
+    });
+    </script>
+    
     <script src="public/javascripts/main.js" type="module">
         import $ from 'https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js';
 
         $(document).ready(function () {
             console.log('jQuery works!');
-        });
-    </script>
-    <script>        document.getElementById('sendBtn').addEventListener('click', function () {
-            askBot();
         });
     </script>
 </body>
